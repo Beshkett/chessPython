@@ -29,7 +29,8 @@ class ChessGame:
         Initializes a new instance of the ChessGame class.
         """
         self.board = chess.Board()
-        self.engine = chess.engine.SimpleEngine.popen_uci(r"C:\Users\Yuki\OneDrive - Office 365\chessPython\stockfish\stockfish-windows-x86-64-avx2.exe")
+        self.engine = chess.engine.SimpleEngine.popen_uci('stockfish-windows-x86-64-avx2.exe')
+        self.engine.configure({"Skill Level": 1})
         self.human_player = chess.WHITE
         self.computer_player = chess.BLACK
 
@@ -124,28 +125,59 @@ class ChessGame:
         """
         if self.board.is_checkmate():
             if self.board.turn == self.human_player:
-                return "You lost!"
+                return "You lost"
             else:
-                return "You won!"
+                return "You won"
         elif self.board.is_stalemate():
-            return "It's a stalemate!"
+            return "It's a stalemate"
         elif self.board.is_insufficient_material():
-            return "It's a draw due to insufficient material!"
+            return "It's a draw due to insufficient material"
         elif self.board.is_seventyfive_moves():
-            return "It's a draw due to the 75-move rule!"
+            return "It's a draw due to the 75-move rule"
         elif self.board.is_fivefold_repetition():
-            return "It's a draw due to the fivefold repetition rule!"
+            return "It's a draw due to the fivefold repetition rule"
         elif self.board.can_claim_draw():
-            return "It's a draw by claim!"
+            return "It's a draw by claim"
         else:
-            return "Unknown result!"
+            return "Unknown result"
 
     def handle_human_move(self, event):
         """
         Handles the human player's move.
 
+        This method is responsible for processing the mouse events and updating the game state based on the human player's actions.
+
         Args:
         - event: The Pygame event object.
+
+        Returns:
+        - None
+
+        Raises:
+        - None
+
+        Algorithm:
+        1. Check if the event type is MOUSEBUTTONDOWN.
+        2. If it is, get the position of the mouse click and calculate the corresponding column and row on the chessboard.
+        3. Convert the column and row to a square on the chessboard.
+        4. Check if there is a piece at the selected square and if it belongs to the human player.
+        5. If there is a valid piece, set it as the selected piece and store the selected square.
+        6. Check if the event type is MOUSEBUTTONUP.
+        7. If it is, check if there is a selected piece.
+        8. If there is, get the position of the mouse release and calculate the corresponding column and row on the chessboard.
+        9. Convert the column and row to a target square on the chessboard.
+        10. Create a move object using the selected square and target square.
+        11. Check if the move is a legal move.
+        12. If it is, update the game board by pushing the move and reset the selected piece and square.
+
+        Example Usage:
+        ```
+        handle_human_move(event)
+        ```
+
+        Note:
+        - This method assumes that the `self.board` attribute is a valid chess board object.
+        - The `self.human_player` attribute should be set to the color of the human player (e.g., chess.WHITE or chess.BLACK) before calling this method.
         """
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
