@@ -1,31 +1,17 @@
-import pygame
+import os
 import chess
 import chess.engine
+import pygame
 
 class ChessGame:
-    """
-    Represents a game of chess.
-
-    Attributes:
-    - board: The chess board.
-    - engine: The chess engine used for computer moves.
-    - human_player: The player controlling the white pieces.
-    - computer_player: The player controlling the black pieces.
-    - board_size: The size of the chess board in pixels.
-    - square_size: The size of each square on the chess board in pixels.
-    - piece_images: A dictionary mapping piece types and colors to their corresponding images.
-    - selected_piece: The currently selected piece.
-    - selected_square: The square on the board where the selected piece is located.
-    - screen: The Pygame screen object.
-    - clock: The Pygame clock object.
-    """
-
     def __init__(self):
         """
         Initializes a new instance of the ChessGame class.
         """
         self.board = chess.Board()
-        self.engine = chess.engine.SimpleEngine.popen_uci('stockfish-windows-x86-64-avx2.exe')
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        engine_path = os.path.join(dir_path, 'stockfish-windows-x86-64-avx2.exe')
+        self.engine = chess.engine.SimpleEngine.popen_uci(engine_path)
         self.engine.configure({"Skill Level": 1})
         self.human_player = chess.WHITE
         self.computer_player = chess.BLACK
@@ -50,9 +36,11 @@ class ChessGame:
         """
         piece_images = {}
         piece_symbols = ['p', 'n', 'b', 'r', 'q', 'k']
+        dir_path = os.path.dirname(os.path.realpath(__file__))
         for piece_type, piece_symbol in zip(chess.PIECE_TYPES, piece_symbols):
             for player in [chess.WHITE, chess.BLACK]:
-                image = pygame.image.load(f"images/{piece_symbol}{('w' if player == chess.WHITE else 'b')}.png")
+                image_path = os.path.join(dir_path, f"images/{piece_symbol}{('w' if player == chess.WHITE else 'b')}.png")
+                image = pygame.image.load(image_path)
                 piece_images[piece_type, player] = image
         return piece_images
 
