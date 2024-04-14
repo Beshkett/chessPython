@@ -197,3 +197,5 @@ class ChessGame:
 if __name__ == "__main__":
     game = ChessGame()
     game.play()
+
+input("Press Enter to close...")
